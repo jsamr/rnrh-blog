@@ -1,5 +1,5 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-import React from "react";
+import React, {useCallback} from "react";
 import { Card, Text } from "react-native-paper";
 import { FeedItem, RootStackParamList } from "../shared-types";
 
@@ -7,7 +7,7 @@ export default function FeedItemDisplay({ item }: { item: FeedItem }) {
   const date = new Date(Date.parse(item.published));
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const url = item.links[0].url;
-  const onPress = React.useCallback(() => {
+  const onPress = useCallback(() => {
     navigation.navigate("Article", { url: url, title: item.title });
   }, [url]);
   return (
