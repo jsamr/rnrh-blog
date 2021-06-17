@@ -3,6 +3,7 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import { textContent } from "domutils";
 import { Element } from "domhandler";
 import TOCEntry from "./TOCEntry";
+import useOnEntryChangeEffect from "../hooks/useOnEntryChangeEffect";
 
 export default function TOC({
   headings,
@@ -14,6 +15,7 @@ export default function TOC({
   const [activeEntry, setActiveEntry] = useState(
     headings.length ? textContent(headings[0]) : ""
   );
+  useOnEntryChangeEffect(setActiveEntry);
   return (
     <ScrollView
       contentContainerStyle={styles.scrollContent}
