@@ -4,6 +4,7 @@ import { textContent } from "domutils";
 import { Element } from "domhandler";
 import TOCEntry from "./TOCEntry";
 import useOnEntryChangeEffect from "../hooks/useOnEntryChangeEffect";
+import useThemeColor from "../hooks/useThemeColor";
 
 export default function TOC({
   headings,
@@ -12,6 +13,7 @@ export default function TOC({
   headings: Element[];
   onPressEntry?: (name: string) => void;
 }) {
+  const surface = useThemeColor("card");
   const [activeEntry, setActiveEntry] = useState(
     headings.length ? textContent(headings[0]) : ""
   );
@@ -19,7 +21,7 @@ export default function TOC({
   return (
     <ScrollView
       contentContainerStyle={styles.scrollContent}
-      style={styles.scrollView}
+      style={[styles.scrollView, { backgroundColor: surface }]}
     >
       <View style={styles.scrollBackground} />
       {headings.map((header) => {

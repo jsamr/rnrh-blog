@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import {
   CustomBlockRenderer,
   CustomTagRendererRecord,
@@ -13,6 +13,7 @@ import { findOne, textContent } from "domutils";
 import { useScroller } from "../utils/scrollerContext";
 import { LayoutChangeEvent } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import useThemeColor from "../hooks/useThemeColor";
 
 const HeadingRenderer: CustomBlockRenderer = function HeaderRenderer({
   TDefaultRenderer,
@@ -170,13 +171,18 @@ const tagsStyles: MixedStyleRecord = {
   },
 };
 
-const baseStyle: MixedStyleDeclaration = {
-  color: "#1c1e21",
-  fontSize: 16,
-  lineHeight: 16 * 1.8,
-};
-
 export default function WebEngine({ children }: React.PropsWithChildren<{}>) {
+  const textColor = useThemeColor("text");
+  const anchorBackground = useThemeColor("anchorBackground");
+  const anchorUnderlineColor = useThemeColor("anchorUnderlineColor");
+  const baseStyle: MixedStyleDeclaration = useMemo(
+    () => ({
+      color: textColor,
+      fontSize: 16,
+      lineHeight: 16 * 1.8,
+    }),
+    [textColor]
+  );
   return (
     <TRenderEngineProvider
       ignoredDomTags={["button", "footer"]}
@@ -187,7 +193,14 @@ export default function WebEngine({ children }: React.PropsWithChildren<{}>) {
         isDomElement(node) && !!node.attribs.class?.match(/hash-link/)
       }
       classesStyles={classesStyles}
-      tagsStyles={tagsStyles}
+      tagsStyles={{
+        ...tagsStyles,
+        a: {
+          color: textColor,
+          backgroundColor: anchorBackground,
+          textDecorationColor: textColor
+        },
+      }}
       baseStyle={baseStyle}
       triggerTREInvalidationPropNames={["classesStyles", "tagsStyles"]}
     >

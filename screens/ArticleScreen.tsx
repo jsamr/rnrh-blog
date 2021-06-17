@@ -9,6 +9,9 @@ import { FAB } from "react-native-paper";
 import TOC from "../components/TOC";
 import Scroller from "../utils/Scroller";
 import { ScrollerProvider } from "../utils/scrollerContext";
+import { StatusBar } from "expo-status-bar";
+import useColorScheme from "../hooks/useColorScheme";
+import useThemeColor from "../hooks/useThemeColor";
 
 type ArticleScreenProps = StackScreenProps<RootStackParamList, "Article">;
 
@@ -48,13 +51,18 @@ function useScrollFeature(scrollerDep: any) {
 export default function ArticleScreen(props: ArticleScreenProps) {
   useSetTitleEffect(props);
   const url = props.route.params.url;
+  const colorScheme = useColorScheme();
+  const surface = useThemeColor("surface");
   const { dom, headings } = useArticleDom(url);
   const { drawerRef, openDrawer, closeDrawer } = useDrawer();
   const { scrollViewRef, scroller } = useScrollFeature(url);
-  const onPressEntry = useCallback((entry: string) => {
-    closeDrawer();
-    scroller.scrollToEntry(entry);
-  }, [scroller]);
+  const onPressEntry = useCallback(
+    (entry: string) => {
+      closeDrawer();
+      scroller.scrollToEntry(entry);
+    },
+    [scroller]
+  );
   const renderToc = useCallback(
     function renderToc() {
       return <TOC headings={headings} onPressEntry={onPressEntry} />;
@@ -71,12 +79,13 @@ export default function ArticleScreen(props: ArticleScreenProps) {
       >
         <ArticleBody scrollViewRef={scrollViewRef} dom={dom} />
         <FAB
-          style={styles.fab}
+          style={[styles.fab, { backgroundColor: surface }]}
           color="#61dafb"
           icon="format-list-bulleted-square"
           onPress={openDrawer}
         />
       </DrawerLayout>
+      <StatusBar animated style={colorScheme === "dark" ? "light" : "dark"} />
     </ScrollerProvider>
   );
 }
@@ -86,6 +95,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 15,
     right: 15,
-    backgroundColor: 'white'
+    backgroundColor: "white",
   },
 });

@@ -1,5 +1,6 @@
 import React from "react";
 import { Pressable, StyleSheet, Text } from "react-native";
+import useThemeColor from "../hooks/useThemeColor";
 
 export default function TOCEntry({
   headerName,
@@ -12,6 +13,7 @@ export default function TOCEntry({
   active: boolean;
   onPress: () => void;
 }) {
+  const text = useThemeColor("text");
   return (
     <Pressable
       style={[styles.container, active && styles["container--active"]]}
@@ -22,6 +24,7 @@ export default function TOCEntry({
         style={[
           styles.label,
           styles[`label--${tagName as "h2" | "h3"}` as const],
+          { color: text },
         ]}
       >
         {headerName}

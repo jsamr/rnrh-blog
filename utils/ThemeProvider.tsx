@@ -1,9 +1,9 @@
-import React from 'react';
+import React from "react";
 import {
   DefaultTheme as NavigationLight,
   DarkTheme as NavigationDark,
   Theme as NavigationTheme,
-  ThemeProvider as NavigationThemeProvider,
+  NavigationContainer,
 } from "@react-navigation/native";
 import { PropsWithChildren } from "react";
 import {
@@ -54,13 +54,15 @@ const navigationLight: NavigationTheme = {
 
 export default function ThemeProvider({ children }: PropsWithChildren<{}>) {
   const colorScheme = useColorScheme();
-  const navigationTheme = colorScheme === "dark" ? navigationDark : navigationLight;
+  const navigationTheme =
+    colorScheme === "dark" ? navigationDark : navigationLight;
   const paperTheme = colorScheme === "dark" ? paperDark : paperLight;
+  console.info(colorScheme);
   return (
     <PaperThemeProvider theme={paperTheme}>
-      <NavigationThemeProvider value={navigationTheme}>
+      <NavigationContainer theme={navigationTheme}>
         {children}
-      </NavigationThemeProvider>
+      </NavigationContainer>
     </PaperThemeProvider>
   );
 }

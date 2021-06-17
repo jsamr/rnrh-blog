@@ -15,24 +15,22 @@ export default function App() {
     <ThemeProvider>
       <WebEngine>
         <SafeAreaProvider>
-          <NavigationContainer>
-            <Stack.Navigator
-              screenOptions={{
-                headerShown: false,
-              }}
-            >
-              <Stack.Screen
-                name="Home"
-                options={{ title: "Blog" }}
-                component={HomeScreen}
-              />
-              <Stack.Screen
-                name="Article"
-                options={{ headerShown: true }}
-                component={ArticleScreen}
-              />
-            </Stack.Navigator>
-          </NavigationContainer>
+          <Stack.Navigator
+            screenOptions={{
+              headerShown: false,
+            }}
+          >
+            <Stack.Screen
+              name="Home"
+              options={{ title: "Blog" }}
+              component={HomeScreen}
+            />
+            <Stack.Screen
+              name="Article"
+              options={{ headerShown: true }}
+              component={ArticleScreen}
+            />
+          </Stack.Navigator>
         </SafeAreaProvider>
       </WebEngine>
     </ThemeProvider>
