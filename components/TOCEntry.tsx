@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   "container--active": {
-    backgroundColor: "#rgba(186, 235, 243, 0.5)",
+    backgroundColor: "rgba(186, 235, 243, 0.5)",
   },
   label: {
     textAlign: "right",

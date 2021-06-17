@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { StyleSheet, View } from "react-native";
 import { useWindowDimensions } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -8,10 +8,8 @@ import { useScroller } from "../utils/scrollerContext";
 
 function LoadingDisplay() {
   return (
-    <View
-      style={{ flexGrow: 1, justifyContent: "center", alignItems: "center" }}
-    >
-      <ActivityIndicator size="large" />
+    <View style={styles.loading}>
+      <ActivityIndicator color="#61dafb" size="large" />
     </View>
   );
 }
@@ -26,7 +24,7 @@ export default function ArticleBody({
   scrollViewRef: any;
 }) {
   const { width } = useWindowDimensions();
-  const availableWidth = Math.min(width, 500) - HZ_MARGIN * 2;
+  const availableWidth = Math.min(width, 500);
   const scroller = useScroller();
   return (
     <ScrollView
@@ -38,7 +36,7 @@ export default function ArticleBody({
     >
       {dom ? (
         <RenderHTMLSource
-          contentWidth={availableWidth}
+          contentWidth={availableWidth - 2 * HZ_MARGIN}
           source={{
             dom,
           }}
@@ -57,6 +55,13 @@ const styles = StyleSheet.create({
   content: {
     flexGrow: 1,
     alignSelf: "center",
-    marginHorizontal: HZ_MARGIN,
+    paddingHorizontal: HZ_MARGIN,
+    // leave some space for the FAB
+    paddingBottom: 65
+  },
+  loading: {
+    flexGrow: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

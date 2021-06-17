@@ -2,6 +2,8 @@ import React, { useCallback } from "react";
 import {
   CustomBlockRenderer,
   CustomTagRendererRecord,
+  isDomElement,
+  MixedStyleDeclaration,
   MixedStyleRecord,
   RenderHTMLConfigProvider,
   TRenderEngineProvider,
@@ -10,6 +12,7 @@ import {
 import { findOne, textContent } from "domutils";
 import { useScroller } from "../utils/scrollerContext";
 import { LayoutChangeEvent } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 
 const HeadingRenderer: CustomBlockRenderer = function HeaderRenderer({
   TDefaultRenderer,
@@ -19,6 +22,20 @@ const HeadingRenderer: CustomBlockRenderer = function HeaderRenderer({
   const onLayout = useCallback(
     (e: LayoutChangeEvent) => {
       scroller.registerScrollEntry(textContent(props.tnode.domNode!), e);
+    },
+    [scroller]
+  );
+  return <TDefaultRenderer {...props} viewProps={{ onLayout }} />;
+};
+
+const HeaderRenderer: CustomBlockRenderer = function HeaderRenderer({
+  TDefaultRenderer,
+  ...props
+}) {
+  const scroller = useScroller();
+  const onLayout = useCallback(
+    (e: LayoutChangeEvent) => {
+      scroller.setOffset(e.nativeEvent.layout.y + e.nativeEvent.layout.height);
     },
     [scroller]
   );
@@ -51,11 +68,31 @@ const ParagraphRenderer: CustomBlockRenderer = function ParagraphRenderer({
   );
 };
 
+const DivRenderer: CustomBlockRenderer = function DivRenderer({
+  TDefaultRenderer,
+  ...props
+}) {
+  if (props.tnode.classes.indexOf("prism-code") > -1) {
+    return (
+      <ScrollView horizontal style={props.style}>
+        <TDefaultRenderer
+          {...props}
+          style={[{ flexGrow: 1, flexShrink: 1, padding: 10 }]}
+        />
+      </ScrollView>
+    );
+  }
+
+  return <TDefaultRenderer {...props} />;
+};
+
 const renderers: CustomTagRendererRecord = {
   h2: HeadingRenderer,
   h3: HeadingRenderer,
   img: ImageRenderer,
-  p: ParagraphRenderer
+  p: ParagraphRenderer,
+  header: HeaderRenderer,
+  div: DivRenderer,
 };
 
 const classesStyles: MixedStyleRecord = {
@@ -90,16 +127,68 @@ const classesStyles: MixedStyleRecord = {
     marginRight: 10,
     overflow: "hidden",
   },
+  "token-line": {
+    whiteSpace: "pre",
+    lineHeight: 12 * 1.4,
+  },
+  "prism-code": {
+    backgroundColor: "#282c34",
+    fontFamily: "monospace",
+    borderRadius: 10,
+    fontSize: 12,
+    flexShrink: 0,
+  },
+};
+
+const tagsStyles: MixedStyleRecord = {
+  a: {
+    color: "#1c1e21",
+    backgroundColor: "rgba(187, 239, 253, 0.3)",
+  },
+  li: {
+    marginBottom: 10,
+  },
+  img: {
+    alignSelf: "center",
+  },
+  h4: {
+    marginBottom: 0,
+    marginTop: 0,
+  },
+  code: {
+    backgroundColor: "rgba(0, 0, 0, 0.06)",
+    fontSize: 14,
+  },
+  blockquote: {
+    marginLeft: 0,
+    marginRight: 0,
+    paddingLeft: 20,
+    paddingRight: 20,
+    backgroundColor: "#fff8d8",
+    borderLeftWidth: 10,
+    borderLeftColor: "#ffe564",
+  },
+};
+
+const baseStyle: MixedStyleDeclaration = {
+  color: "#1c1e21",
+  fontSize: 16,
+  lineHeight: 16 * 1.8,
 };
 
 export default function WebEngine({ children }: React.PropsWithChildren<{}>) {
   return (
     <TRenderEngineProvider
-      ignoredDomTags={["button"]}
+      ignoredDomTags={["button", "footer"]}
       selectDomRoot={(node) =>
         findOne((e) => e.name === "article", node.children, true)
       }
+      ignoreDomNode={(node) =>
+        isDomElement(node) && !!node.attribs.class?.match(/hash-link/)
+      }
       classesStyles={classesStyles}
+      tagsStyles={tagsStyles}
+      baseStyle={baseStyle}
       triggerTREInvalidationPropNames={["classesStyles", "tagsStyles"]}
     >
       <RenderHTMLConfigProvider

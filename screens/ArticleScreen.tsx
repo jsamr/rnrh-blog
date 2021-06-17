@@ -72,6 +72,7 @@ export default function ArticleScreen(props: ArticleScreenProps) {
         <ArticleBody scrollViewRef={scrollViewRef} dom={dom} />
         <FAB
           style={styles.fab}
+          color="#61dafb"
           icon="format-list-bulleted-square"
           onPress={openDrawer}
         />
@@ -85,5 +86,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 15,
     right: 15,
+    backgroundColor: 'white'
   },
 });
