@@ -14,6 +14,7 @@ import { useScroller } from "../utils/scrollerContext";
 import { LayoutChangeEvent } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import useThemeColor from "../hooks/useThemeColor";
+import Colors from "../utils/Colors";
 
 const HeadingRenderer: CustomBlockRenderer = function HeaderRenderer({
   TDefaultRenderer,
@@ -168,13 +169,13 @@ const tagsStyles: MixedStyleRecord = {
     backgroundColor: "#fff8d8",
     borderLeftWidth: 10,
     borderLeftColor: "#ffe564",
+    color: Colors.textDark
   },
 };
 
 export default function WebEngine({ children }: React.PropsWithChildren<{}>) {
   const textColor = useThemeColor("text");
   const anchorBackground = useThemeColor("anchorBackground");
-  const anchorUnderlineColor = useThemeColor("anchorUnderlineColor");
   const baseStyle: MixedStyleDeclaration = useMemo(
     () => ({
       color: textColor,

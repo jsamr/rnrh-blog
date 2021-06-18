@@ -3,7 +3,7 @@ import Svg, { G, Path, Circle } from "react-native-svg";
 
 const SIZE = 50;
 
-function SvgReactNative(props: any) {
+function ReactNativeLogo(props: any) {
   return (
     <Svg
       width={SIZE}
@@ -20,4 +20,4 @@ function SvgReactNative(props: any) {
   );
 }
 
-export default SvgReactNative;
+export default ReactNativeLogo;

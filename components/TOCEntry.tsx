@@ -14,9 +14,13 @@ export default function TOCEntry({
   onPress: () => void;
 }) {
   const text = useThemeColor("text");
+  const activeBackground = useThemeColor("softHighlight");
   return (
     <Pressable
-      style={[styles.container, active && styles["container--active"]]}
+      style={[
+        styles.container,
+        active && { backgroundColor: activeBackground },
+      ]}
       onPress={onPress}
       android_ripple={{ color: "#baebf3" }}
     >
@@ -40,9 +44,6 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     borderRadius: 10,
     paddingVertical: 10,
-  },
-  "container--active": {
-    backgroundColor: "rgba(186, 235, 243, 0.5)",
   },
   label: {
     textAlign: "right",

@@ -1,7 +1,8 @@
+import 'intl';
+import 'intl/locale-data/jsonp/en';
 import { createStackNavigator } from "@react-navigation/stack";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
 import { RootStackParamList } from "./shared-types";
 import HomeScreen from "./screens/HomeScreen";
 import ArticleScreen from "./screens/ArticleScreen";

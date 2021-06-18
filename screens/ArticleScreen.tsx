@@ -48,11 +48,23 @@ function useScrollFeature(scrollerDep: any) {
   };
 }
 
+function ThemedFAB({ onPress }: { onPress: any }) {
+  const pressableBackground = useThemeColor("pressableBackground");
+  const pressableTint = useThemeColor("pressableTint");
+  return (
+    <FAB
+      style={[styles.fab, { backgroundColor: pressableBackground }]}
+      color={pressableTint}
+      icon="format-list-bulleted-square"
+      onPress={onPress}
+    />
+  );
+}
+
 export default function ArticleScreen(props: ArticleScreenProps) {
   useSetTitleEffect(props);
   const url = props.route.params.url;
   const colorScheme = useColorScheme();
-  const surface = useThemeColor("surface");
   const { dom, headings } = useArticleDom(url);
   const { drawerRef, openDrawer, closeDrawer } = useDrawer();
   const { scrollViewRef, scroller } = useScrollFeature(url);
@@ -78,12 +90,7 @@ export default function ArticleScreen(props: ArticleScreenProps) {
         ref={drawerRef}
       >
         <ArticleBody scrollViewRef={scrollViewRef} dom={dom} />
-        <FAB
-          style={[styles.fab, { backgroundColor: surface }]}
-          color="#61dafb"
-          icon="format-list-bulleted-square"
-          onPress={openDrawer}
-        />
+        <ThemedFAB onPress={openDrawer} />
       </DrawerLayout>
       <StatusBar animated style={colorScheme === "dark" ? "light" : "dark"} />
     </ScrollerProvider>
@@ -95,6 +102,5 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 15,
     right: 15,
-    backgroundColor: "white",
   },
 });

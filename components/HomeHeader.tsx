@@ -1,14 +1,10 @@
 import React from "react";
 import { Platform, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import SvgReactNative from "../components/ReactNativeLogo";
-import useThemeColor from "../hooks/useThemeColor";
+import Colors from "../utils/Colors";
 
 export default function HomeHeader() {
   const { top } = useSafeAreaInsets();
-  const surface = useThemeColor("surface");
-  const onSurface = useThemeColor("onSurface");
-  const textStyle = { color: onSurface };
   return (
     <>
       <View
@@ -16,7 +12,6 @@ export default function HomeHeader() {
           headerStyles.container,
           {
             paddingTop: Platform.select({ ios: 0, default: top }) + 40,
-            backgroundColor: surface,
             marginBottom: 10,
           },
         ]}
@@ -24,11 +19,10 @@ export default function HomeHeader() {
         <View style={headerStyles.main}>
           <View style={headerStyles.textContainer}>
             <Text style={headerStyles.title}>React Native Blog</Text>
-            <Text style={[headerStyles.subtitle, textStyle]}>
+            <Text style={headerStyles.subtitle}>
               Learn once, write anywhere.
             </Text>
           </View>
-          <SvgReactNative />
         </View>
         <Text style={headerStyles.powered}>
           powered by React Native Render HTML
@@ -42,6 +36,7 @@ const headerStyles = StyleSheet.create({
   container: {
     paddingVertical: 40,
     padding: 20,
+    backgroundColor: Colors.darkerGray
   },
   main: {
     flexDirection: "row",
@@ -55,7 +50,7 @@ const headerStyles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 21,
-    color: "white",
+    color: Colors.textLight,
   },
   powered: {
     marginTop: 10,
