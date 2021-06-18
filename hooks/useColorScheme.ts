@@ -1,8 +1,19 @@
-import { ColorSchemeName, useColorScheme as _useColorScheme } from 'react-native';
+import { useEffect, useState } from "react";
+import {
+  Appearance,
+  ColorSchemeName,
+  useColorScheme as _useColorScheme,
+} from "react-native";
 
-// The useColorScheme value is always either light or dark, but the built-in
-// type suggests that it can be null. This will not happen in practice, so this
-// makes it a bit easier to work with.
+// Circumvent this bug happening with splashscreen: https://github.com/facebook/react-native/issues/28525
 export default function useColorScheme(): NonNullable<ColorSchemeName> {
-  return _useColorScheme() as NonNullable<ColorSchemeName>;
+  const [colorScheme, setColorScheme] = useState(Appearance.getColorScheme());
+  useEffect(() => {
+    const listener: Appearance.AppearanceListener = () => {
+      setColorScheme(Appearance.getColorScheme());
+    };
+    Appearance.addChangeListener(listener);
+    return () => Appearance.removeChangeListener(listener);
+  }, []);
+  return colorScheme as NonNullable<ColorSchemeName>;
 }

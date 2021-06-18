@@ -1,14 +1,15 @@
 {
   "expo": {
-    "name": "rnrh-blog",
-    "slug": "rnrh-blog",
+    "name": "React Native Blog",
+    "slug": "react-native-blog",
+    "description": "A React Native blog app made with love and React Native Render HTML!",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
     "backgroundColor": "#282c34",
     "androidStatusBar": {
-      "barStyle": "light"
+      "barStyle": "light-content"
     },
     "splash": {
       "image": "./assets/splash.png",
@@ -29,9 +30,6 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#282c34"
       }
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
     }
   }
 }
