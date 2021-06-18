@@ -9,6 +9,7 @@ import ArticleScreen from "./screens/ArticleScreen";
 import WebEngine from "./components/WebEngine";
 import ThemeProvider from "./utils/ThemeProvider";
 import QueryProvider from "./utils/QueryProvider";
+import Background from "./components/Background";
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -18,22 +19,24 @@ export default function App() {
       <ThemeProvider>
         <WebEngine>
           <SafeAreaProvider>
-            <Stack.Navigator
-              screenOptions={{
-                headerShown: false,
-              }}
-            >
-              <Stack.Screen
-                name="Home"
-                options={{ title: "Blog" }}
-                component={HomeScreen}
-              />
-              <Stack.Screen
-                name="Article"
-                options={{ headerShown: true }}
-                component={ArticleScreen}
-              />
-            </Stack.Navigator>
+            <Background>
+              <Stack.Navigator
+                screenOptions={{
+                  headerShown: false,
+                }}
+              >
+                <Stack.Screen
+                  name="Home"
+                  options={{ title: "Blog" }}
+                  component={HomeScreen}
+                />
+                <Stack.Screen
+                  name="Article"
+                  options={{ headerShown: true }}
+                  component={ArticleScreen}
+                />
+              </Stack.Navigator>
+            </Background>
           </SafeAreaProvider>
         </WebEngine>
       </ThemeProvider>
