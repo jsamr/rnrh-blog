@@ -1,36 +1,29 @@
 import { useEffect, useState, useMemo } from "react";
 import { useAmbientTRenderEngine } from "react-native-render-html";
-import { findAll, findOne } from "domutils";
+import { findAll } from "domutils";
 import { Element } from "domhandler";
+import { useQuery } from "react-query";
 
 function useFetchHtml(url: string) {
-  const [fetechState, setState] = useState({
-    html: null as string | null,
-    error: null as string | null,
-  });
-  useEffect(
-    function fetchArticle() {
-      let cancelled = false;
-      (async function () {
-        const response = await fetch(url);
-        if (response.ok) {
-          const html = await response.text();
-          !cancelled && setState({ html, error: null });
-        } else {
-          !cancelled &&
-            setState({
-              html: null,
-              error: `Could not load HTML. Received status ${response.status}`,
-            });
-        }
-      })();
-      return () => {
-        cancelled = true;
-      };
+  const {
+    isLoading,
+    data: html,
+    refetch: refresh,
+  } = useQuery(
+    url,
+    async () => {
+      const response = await fetch(url);
+      if (response.ok) {
+        return response.text();
+      }
     },
-    [url]
+    { staleTime: 24 * 60 * 60 }
   );
-  return fetechState;
+  return {
+    refresh,
+    isLoading,
+    html,
+  };
 }
 
 export default function useArticleDom(url: string) {

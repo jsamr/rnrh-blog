@@ -46,7 +46,7 @@ const renderItem: ListRenderItem<FeedItem> = function renderItem({ item }) {
 
 export default function HomeScreen() {
   const { bottom, top } = useSafeAreaInsets();
-  const { items, refresh, isRefreshing } = useRssFeed(
+  const { items, refresh, isLoading } = useRssFeed(
     "https://reactnative.dev/blog/rss.xml"
   );
   return (
@@ -54,11 +54,11 @@ export default function HomeScreen() {
       <FlatList
         refreshControl={
           Platform.OS === "android" ? (
-            <Refresh onRefresh={refresh} refreshing={isRefreshing} />
+            <Refresh onRefresh={refresh} refreshing={isLoading} />
           ) : undefined
         }
         onRefresh={refresh}
-        refreshing={isRefreshing}
+        refreshing={isLoading}
         contentInset={Platform.select({ ios: { top }, default: undefined })}
         contentContainerStyle={{ paddingBottom: bottom }}
         data={items}

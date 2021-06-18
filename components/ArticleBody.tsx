@@ -5,6 +5,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import { RenderHTMLSource, Document } from "react-native-render-html";
 import { ActivityIndicator } from "react-native-paper";
 import { useScroller } from "../utils/scrollerContext";
+import { useState } from "react";
 
 function LoadingDisplay() {
   return (
