@@ -1,12 +1,11 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import React, { useCallback } from "react";
-import { Text } from "react-native";
-import { Avatar, Button, Card, Title, Paragraph } from "react-native-paper";
+import { Card, Paragraph } from "react-native-paper";
 import { FeedItem, RootStackParamList } from "../shared-types";
 import ReactNativeLogo from "./ReactNativeLogo";
 
 const renderLeft = (props: any) => (
-  <ReactNativeLogo width={35} height={35} {...props} />
+  <ReactNativeLogo width={30} height={30} {...props} />
 );
 
 const dateOptions: Intl.DateTimeFormatOptions = {
@@ -27,16 +26,16 @@ export default function FeedItemDisplay({ item }: { item: FeedItem }) {
     <Card
       style={{
         marginHorizontal: 10,
-        paddingRight: 15,
       }}
       onPress={onPress}
     >
       <Card.Title
         style={{ minHeight: 0, paddingVertical: 10 }}
         left={renderLeft}
+        leftStyle={{ width: 28, padding: 0, margin: 0 }}
         titleNumberOfLines={2}
         title={item.title}
-        titleStyle={{ lineHeight: 26 }}
+        titleStyle={{ lineHeight: 26, paddingRight: 15 }}
         subtitle={date.toLocaleDateString("en-US", dateOptions)}
         subtitleStyle={{ paddingTop: 5 }}
       />

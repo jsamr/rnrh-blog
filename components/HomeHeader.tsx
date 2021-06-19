@@ -1,7 +1,19 @@
-import React from "react";
-import { Platform, StyleSheet, Text, View } from "react-native";
+import React, { PropsWithChildren } from "react";
+import { Linking, Platform, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Colors from "../utils/Colors";
+
+function openLink(url: string) {
+  return () => Linking.openURL(url);
+}
+
+function Link({ children, url }: PropsWithChildren<{ url: string }>) {
+  return (
+    <Text style={styles.link} onPress={openLink(url)}>
+      {children}
+    </Text>
+  );
+}
 
 export default function HomeHeader() {
   const { top } = useSafeAreaInsets();
@@ -9,34 +21,43 @@ export default function HomeHeader() {
     <>
       <View
         style={[
-          headerStyles.container,
+          styles.container,
           {
             paddingTop: Platform.select({ ios: 0, default: top }) + 40,
             marginBottom: 10,
           },
         ]}
       >
-        <View style={headerStyles.main}>
-          <View style={headerStyles.textContainer}>
-            <Text style={headerStyles.title}>React Native Blog</Text>
-            <Text style={headerStyles.subtitle}>
-              Learn once, write anywhere.
-            </Text>
+        <View style={styles.main}>
+          <View style={styles.textContainer}>
+            <Text style={styles.title}>React Native Blog</Text>
+            <Text style={styles.subtitle}>Learn once, write anywhere.</Text>
           </View>
         </View>
-        <Text style={headerStyles.powered}>
-          powered by React Native Render HTML
+        <Text style={styles.powered}>
+          powered by{" "}
+          <Link url="https://meliorence.github.io/react-native-render-html">
+            React Native Render HTML
+          </Link>
+          . {"\n"}
+          <Link url="https://github.com/jsamr/rnrh-blog/tree/enhanced">
+            Source code on Github
+          </Link>
+          .
         </Text>
       </View>
     </>
   );
 }
 
-const headerStyles = StyleSheet.create({
+const styles = StyleSheet.create({
+  link: {
+    textDecorationLine: "underline",
+  },
   container: {
     paddingVertical: 40,
     padding: 20,
-    backgroundColor: Colors.darkerGray
+    backgroundColor: Colors.darkerGray,
   },
   main: {
     flexDirection: "row",
