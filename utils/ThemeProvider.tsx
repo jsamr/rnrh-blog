@@ -44,6 +44,7 @@ function makeNavigationTheme(
       ...colors,
       card: colors.headerBackground,
       text: colors.headerColor,
+      primary: colors.tint
     },
   };
 }
