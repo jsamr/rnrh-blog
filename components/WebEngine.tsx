@@ -9,6 +9,7 @@ import {
   MixedStyleRecord,
   RenderHTMLConfigProvider,
   TBlock,
+  TRenderEngineConfig,
   TRenderEngineProvider,
   useComputeMaxWidthForTag,
   useContentWidth,
@@ -217,6 +218,14 @@ const tagsStyles: MixedStyleRecord = {
   },
 };
 
+const ignoredDomTags = ["button", "footer"];
+
+const selectDomRoot: TRenderEngineConfig["selectDomRoot"] = (node) =>
+  findOne((e) => e.name === "article", node.children, true);
+
+const ignoreDomNode: TRenderEngineConfig["ignoreDomNode"] = (node) =>
+  isDomElement(node) && !!node.attribs.class?.match(/hash-link/);
+
 export default function WebEngine({ children }: React.PropsWithChildren<{}>) {
   const textColor = useThemeColor("text");
   const anchorBackground = useThemeColor("anchorBackground");
@@ -230,25 +239,23 @@ export default function WebEngine({ children }: React.PropsWithChildren<{}>) {
   );
   return (
     <TRenderEngineProvider
-      ignoredDomTags={["button", "footer"]}
-      selectDomRoot={(node) =>
-        findOne((e) => e.name === "article", node.children, true)
-      }
-      ignoreDomNode={(node) =>
-        isDomElement(node) && !!node.attribs.class?.match(/hash-link/)
-      }
+      ignoredDomTags={ignoredDomTags}
+      selectDomRoot={selectDomRoot}
+      ignoreDomNode={ignoreDomNode}
       classesStyles={classesStyles}
-      tagsStyles={{
-        ...tagsStyles,
-        a: {
-          color: textColor,
-          backgroundColor: anchorBackground,
-          textDecorationColor: textColor,
-        },
-      }}
+      tagsStyles={useMemo(
+        () => ({
+          ...tagsStyles,
+          a: {
+            color: textColor,
+            backgroundColor: anchorBackground,
+            textDecorationColor: textColor,
+          },
+        }),
+        [textColor, anchorBackground]
+      )}
       customHTMLElementModels={customElementModels}
       baseStyle={baseStyle}
-      triggerTREInvalidationPropNames={["classesStyles", "tagsStyles"]}
     >
       <RenderHTMLConfigProvider
         renderers={renderers}
