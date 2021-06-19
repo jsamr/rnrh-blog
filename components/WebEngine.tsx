@@ -10,7 +10,7 @@ import {
   useInternalRenderer,
 } from "react-native-render-html";
 import { findOne, textContent } from "domutils";
-import { useScroller } from "../utils/scrollerContext";
+import { useScroller } from "../utils/scroller";
 import { LayoutChangeEvent } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 

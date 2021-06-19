@@ -8,7 +8,7 @@ import { DrawerLayout, ScrollView } from "react-native-gesture-handler";
 import { FAB } from "react-native-paper";
 import TOC from "../components/TOC";
 import Scroller from "../utils/Scroller";
-import { ScrollerProvider } from "../utils/scrollerContext";
+import { ScrollerProvider } from "../utils/scroller";
 
 type ArticleScreenProps = StackScreenProps<RootStackParamList, "Article">;
 

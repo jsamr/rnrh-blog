@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useScroller } from "../utils/scrollerContext";
+import { useScroller } from "../utils/scroller";
 
 export default function useOnEntryChangeEffect(
   onEntryChange: (entryName: string) => void
