@@ -18,21 +18,6 @@ function LoadingDisplay() {
 
 const HZ_MARGIN = 10;
 
-// A trick to avoid the UI hanging when navigating.
-function useDelayedLoading(dom: Document | null) {
-  const [isLoading, setIsLoading] = useState(true);
-  useEffect(
-    useCallback(
-      function onFocus() {
-        const timeout = setTimeout(() => setIsLoading(dom == null), 100);
-        return () => clearTimeout(timeout);
-      },
-      [dom]
-    )
-  );
-  return { isLoading };
-}
-
 export default function ArticleBody({
   dom,
   scrollViewRef,
@@ -41,7 +26,6 @@ export default function ArticleBody({
   scrollViewRef: any;
 }) {
   const { width } = useWindowDimensions();
-  const { isLoading } = useDelayedLoading(dom);
   const availableWidth = Math.min(width, 500);
   const scroller = useScroller();
   return (
@@ -52,13 +36,13 @@ export default function ArticleBody({
       scrollEventThrottle={100}
       contentContainerStyle={[styles.content, { width: availableWidth }]}
     >
-      {isLoading ? (
+      {dom == null ? (
         <LoadingDisplay />
       ) : (
         <RenderHTMLSource
           contentWidth={availableWidth - 2 * HZ_MARGIN}
           source={{
-            dom: dom!,
+            dom,
           }}
         />
       )}
