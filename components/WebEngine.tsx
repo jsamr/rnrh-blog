@@ -18,7 +18,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import { Video } from "expo-av";
 import { LayoutChangeEvent } from "react-native";
 import { findOne, textContent } from "domutils";
-import { useScroller } from "../utils/scrollerContext";
+import { useScroller } from "../utils/scroller";
 import useThemeColor from "../hooks/useThemeColor";
 import Colors from "../utils/Colors";
 

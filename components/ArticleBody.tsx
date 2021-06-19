@@ -4,7 +4,7 @@ import { useWindowDimensions } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { RenderHTMLSource, Document } from "react-native-render-html";
 import { ActivityIndicator } from "react-native-paper";
-import { useScroller } from "../utils/scrollerContext";
+import { useScroller } from "../utils/scroller";
 import { useState } from "react";
 import { useEffect } from "react";
 
