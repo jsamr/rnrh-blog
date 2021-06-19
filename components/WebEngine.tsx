@@ -2,19 +2,55 @@ import React, { useCallback, useMemo } from "react";
 import {
   CustomBlockRenderer,
   CustomTagRendererRecord,
+  HTMLContentModel,
+  HTMLElementModel,
   isDomElement,
   MixedStyleDeclaration,
   MixedStyleRecord,
   RenderHTMLConfigProvider,
+  TBlock,
   TRenderEngineProvider,
+  useComputeMaxWidthForTag,
+  useContentWidth,
   useInternalRenderer,
 } from "react-native-render-html";
+import { ScrollView } from "react-native-gesture-handler";
+import { Video } from "expo-av";
+import { LayoutChangeEvent } from "react-native";
 import { findOne, textContent } from "domutils";
 import { useScroller } from "../utils/scrollerContext";
-import { LayoutChangeEvent } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
 import useThemeColor from "../hooks/useThemeColor";
 import Colors from "../utils/Colors";
+
+function findSource(tnode: TBlock) {
+  if (tnode.attributes.src) {
+    return tnode.attributes.src;
+  }
+  const sourceElms = findOne(
+    (elm) => elm.tagName === "source",
+    tnode.domNode.children
+  );
+  return sourceElms ? sourceElms.attribs.src : "";
+}
+
+const VideoRenderer: CustomBlockRenderer = function VideoRenderer({
+  tnode,
+  style,
+  key,
+}) {
+  const uri = findSource(tnode);
+  const computeMaxWidth = useComputeMaxWidthForTag("video");
+  const width = computeMaxWidth(useContentWidth());
+  return (
+    <Video
+      key={key}
+      useNativeControls
+      resizeMode="contain"
+      style={[{ aspectRatio: 16 / 9 }, style, { width }]}
+      source={{ uri: findSource(tnode) }}
+    />
+  );
+};
 
 const HeadingRenderer: CustomBlockRenderer = function HeaderRenderer({
   TDefaultRenderer,
@@ -88,6 +124,13 @@ const DivRenderer: CustomBlockRenderer = function DivRenderer({
   return <TDefaultRenderer {...props} />;
 };
 
+const customElementModels = {
+  video: HTMLElementModel.fromCustomModel({
+    contentModel: HTMLContentModel.block,
+    tagName: "video",
+  }),
+};
+
 const renderers: CustomTagRendererRecord = {
   h2: HeadingRenderer,
   h3: HeadingRenderer,
@@ -95,6 +138,7 @@ const renderers: CustomTagRendererRecord = {
   p: ParagraphRenderer,
   header: HeaderRenderer,
   div: DivRenderer,
+  video: VideoRenderer,
 };
 
 const classesStyles: MixedStyleRecord = {
@@ -169,7 +213,7 @@ const tagsStyles: MixedStyleRecord = {
     backgroundColor: "#fff8d8",
     borderLeftWidth: 10,
     borderLeftColor: "#ffe564",
-    color: Colors.textDark
+    color: Colors.textDark,
   },
 };
 
@@ -199,9 +243,10 @@ export default function WebEngine({ children }: React.PropsWithChildren<{}>) {
         a: {
           color: textColor,
           backgroundColor: anchorBackground,
-          textDecorationColor: textColor
+          textDecorationColor: textColor,
         },
       }}
+      customHTMLElementModels={customElementModels}
       baseStyle={baseStyle}
       triggerTREInvalidationPropNames={["classesStyles", "tagsStyles"]}
     >
