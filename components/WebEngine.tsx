@@ -6,6 +6,7 @@ import {
   MixedStyleDeclaration,
   MixedStyleRecord,
   RenderHTMLConfigProvider,
+  TRenderEngineConfig,
   TRenderEngineProvider,
   useInternalRenderer,
 } from "react-native-render-html";
@@ -55,7 +56,7 @@ const ParagraphRenderer: CustomBlockRenderer = function ParagraphRenderer({
   tnode,
   ...props
 }) {
-  const marginsFixture =
+  const marginsFix =
     tnode.markers.olNestLevel > -1 || tnode.markers.ulNestLevel > -1
       ? { marginTop: 0, marginBottom: 0 }
       : null;
@@ -63,7 +64,7 @@ const ParagraphRenderer: CustomBlockRenderer = function ParagraphRenderer({
     <TDefaultRenderer
       {...props}
       tnode={tnode}
-      style={[props.style, marginsFixture]}
+      style={[props.style, marginsFix]}
     />
   );
 };
@@ -170,26 +171,32 @@ const tagsStyles: MixedStyleRecord = {
   },
 };
 
+
 const baseStyle: MixedStyleDeclaration = {
   color: "#1c1e21",
   fontSize: 16,
   lineHeight: 16 * 1.8,
 };
 
+const ignoredDomTags = ["button", "footer"];
+
+const selectDomRoot: TRenderEngineConfig["selectDomRoot"] = (node) =>
+  findOne((e) => e.name === "article", node.children, true);
+
+const ignoreDomNode: TRenderEngineConfig["ignoreDomNode"] = (node) =>
+  isDomElement(node) && !!node.attribs.class?.match(/hash-link/);
+
 export default function WebEngine({ children }: React.PropsWithChildren<{}>) {
+  // Every prop is defined outside of the function component.
+  // This is important to prevent extraneous rebuilts of the engine.
   return (
     <TRenderEngineProvider
-      ignoredDomTags={["button", "footer"]}
-      selectDomRoot={(node) =>
-        findOne((e) => e.name === "article", node.children, true)
-      }
-      ignoreDomNode={(node) =>
-        isDomElement(node) && !!node.attribs.class?.match(/hash-link/)
-      }
+      ignoredDomTags={ignoredDomTags}
+      selectDomRoot={selectDomRoot}
+      ignoreDomNode={ignoreDomNode}
       classesStyles={classesStyles}
       tagsStyles={tagsStyles}
       baseStyle={baseStyle}
-      triggerTREInvalidationPropNames={["classesStyles", "tagsStyles"]}
     >
       <RenderHTMLConfigProvider
         renderers={renderers}
