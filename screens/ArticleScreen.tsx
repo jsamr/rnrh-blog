@@ -3,8 +3,8 @@ import { StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../shared-types";
 import ArticleBody from "../components/ArticleBody";
 import useArticleDom from "../hooks/useArticleDom";
-import { StyleSheet } from "react-native";
-import { DrawerLayout, ScrollView } from "react-native-gesture-handler";
+import { StyleSheet, FlatList } from "react-native";
+import { DrawerLayout } from "react-native-gesture-handler";
 import { FAB } from "react-native-paper";
 import TOC from "../components/TOC";
 import Scroller from "../utils/Scroller";
@@ -40,7 +40,7 @@ function useDrawer() {
 }
 
 function useScrollFeature(scrollerDep: any) {
-  const scrollViewRef = useRef<null | ScrollView>(null);
+  const scrollViewRef = useRef<null | FlatList<any>>(null);
   const scroller = useMemo(() => new Scroller(scrollViewRef), [scrollerDep]);
   return {
     scroller,
@@ -89,7 +89,7 @@ export default function ArticleScreen(props: ArticleScreenProps) {
         renderNavigationView={renderToc}
         ref={drawerRef}
       >
-        <ArticleBody scrollViewRef={scrollViewRef} dom={dom} />
+        <ArticleBody dom={dom} />
         <ThemedFAB onPress={openDrawer} />
       </DrawerLayout>
       <StatusBar animated style={colorScheme === "dark" ? "light" : "dark"} />

@@ -19,67 +19,26 @@ function LoadingDisplay() {
 
 const HZ_MARGIN = 10;
 
-// A trick to avoid the UI hanging when navigating.
-function useDelayedLoading(dom: Document | null) {
-  const [isLoading, setIsLoading] = useState(true);
-  useEffect(
-    useCallback(
-      function onFocus() {
-        const handle = InteractionManager.runAfterInteractions(() =>
-          setIsLoading(dom == null)
-        );
-        return () => handle.cancel();
-      },
-      [dom]
-    )
-  );
-  return { isLoading };
-}
-
 export default function ArticleBody({
   dom,
-  scrollViewRef,
 }: {
   dom: Document | null;
-  scrollViewRef: any;
 }) {
   const { width } = useWindowDimensions();
-  const { isLoading } = useDelayedLoading(dom);
   const availableWidth = Math.min(width, 500);
-  const scroller = useScroller();
-  return (
-    <ScrollView
-      {...scroller.handlers}
-      style={styles.container}
-      ref={scrollViewRef}
-      scrollEventThrottle={100}
-      contentContainerStyle={[styles.content, { width: availableWidth }]}
-    >
-      {isLoading ? (
-        <LoadingDisplay />
-      ) : (
-        <RenderHTMLSource
-          contentWidth={availableWidth - 2 * HZ_MARGIN}
-          source={{
-            dom: dom!,
-          }}
-        />
-      )}
-    </ScrollView>
+  return !dom ? (
+    <LoadingDisplay />
+  ) : (
+    <RenderHTMLSource
+      contentWidth={availableWidth - 2 * HZ_MARGIN}
+      source={{
+        dom,
+      }}
+    />
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-  },
-  content: {
-    flexGrow: 1,
-    alignSelf: "center",
-    paddingHorizontal: HZ_MARGIN,
-    // leave some space for the FAB
-    paddingBottom: 65,
-  },
   loading: {
     flexGrow: 1,
     justifyContent: "center",

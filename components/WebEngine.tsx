@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useRef } from "react";
 import {
   CustomBlockRenderer,
   CustomTagRendererRecord,
@@ -11,15 +11,17 @@ import {
   RenderHTMLConfig,
   RenderHTMLConfigProvider,
   TBlock,
+  TChildrenRenderer,
+  TNode,
   TRenderEngineConfig,
   TRenderEngineProvider,
   useComputeMaxWidthForTag,
   useContentWidth,
   useInternalRenderer,
 } from "react-native-render-html";
-import { ScrollView } from "react-native-gesture-handler";
+import { FlatList, ScrollView } from "react-native-gesture-handler";
 import { Video } from "expo-av";
-import { LayoutChangeEvent } from "react-native";
+import { ListRenderItemInfo, StyleSheet } from "react-native";
 import { findOne, textContent } from "domutils";
 import { useScroller } from "../utils/scroller";
 import useThemeColor from "../hooks/useThemeColor";
@@ -60,27 +62,11 @@ const HeadingRenderer: CustomBlockRenderer = function HeaderRenderer({
   ...props
 }) {
   const scroller = useScroller();
-  const onLayout = useCallback(
-    (e: LayoutChangeEvent) => {
-      scroller.registerScrollEntry(textContent(props.tnode.domNode!), e);
-    },
-    [scroller]
-  );
-  return <TDefaultRenderer {...props} viewProps={{ onLayout }} />;
-};
-
-const HeaderRenderer: CustomBlockRenderer = function HeaderRenderer({
-  TDefaultRenderer,
-  ...props
-}) {
-  const scroller = useScroller();
-  const onLayout = useCallback(
-    (e: LayoutChangeEvent) => {
-      scroller.setOffset(e.nativeEvent.layout.y + e.nativeEvent.layout.height);
-    },
-    [scroller]
-  );
-  return <TDefaultRenderer {...props} viewProps={{ onLayout }} />;
+  const ref = useRef<any>();
+  const onLayout = useCallback(() => {
+    scroller.registerScrollEntry(textContent(props.tnode.domNode!), ref);
+  }, [scroller]);
+  return <TDefaultRenderer {...props} viewProps={{ onLayout, ref } as any} />;
 };
 
 const ImageRenderer: CustomBlockRenderer = function ImageRenderer(props) {
@@ -123,9 +109,54 @@ const DivRenderer: CustomBlockRenderer = function DivRenderer({
       </ScrollView>
     );
   }
-
   return <TDefaultRenderer {...props} />;
 };
+
+const renderChild = ({ item }: ListRenderItemInfo<TNode>) => {
+  return <TChildrenRenderer tchildren={[item]} />;
+};
+
+const ArticleRenderer: CustomBlockRenderer = function ArticleRenderer({
+  TDefaultRenderer,
+  ...props
+}) {
+  const scroller = useScroller();
+  const children = useMemo(() => {
+    return props.tnode.children
+      .map((c) => {
+        if (c.classes.includes("markdown")) {
+          return c.children;
+        }
+        return c;
+      })
+      .flat();
+  }, [props.tnode]);
+  return (
+    <FlatList
+      {...scroller.handlers}
+      ref={scroller.ref as any}
+      renderItem={renderChild}
+      keyExtractor={(item, index) => `${item.tagName}-${index}`}
+      initialNumToRender={2}
+      style={styles.container}
+      contentContainerStyle={styles.content}
+      data={children}
+    />
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flexGrow: 1,
+  },
+  content: {
+    flexGrow: 1,
+    // alignSelf: "center",
+    paddingHorizontal: 10,
+    // leave some space for the FAB
+    paddingBottom: 65,
+  },
+});
 
 const customElementModels = {
   video: HTMLElementModel.fromCustomModel({
@@ -135,11 +166,11 @@ const customElementModels = {
 };
 
 const renderers: CustomTagRendererRecord = {
+  article: ArticleRenderer,
   h2: HeadingRenderer,
   h3: HeadingRenderer,
   img: ImageRenderer,
   p: ParagraphRenderer,
-  header: HeaderRenderer,
   div: DivRenderer,
   video: VideoRenderer,
 };
@@ -217,6 +248,9 @@ const tagsStyles: MixedStyleRecord = {
     borderLeftWidth: 10,
     borderLeftColor: "#ffe564",
     color: Colors.textDark,
+  },
+  p: {
+    marginBottom: 0,
   },
 };
 

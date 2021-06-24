@@ -1,58 +1,38 @@
 import { MutableRefObject } from "react";
-import { LayoutChangeEvent, Platform, ScrollViewProps } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import { FlatListProps, FlatList, View } from "react-native";
 import { EventEmitter } from "events";
+import { TNode } from "react-native-render-html";
+import { textContent } from "domutils";
 
 // This is the min distance from the top edge of the scroll view
 // to select a heading
 const MIN_DIST_FROM_TOP_EDG = 15;
 
-export default class Scroller {
-  private ref: MutableRefObject<ScrollView | null>;
-  private entriesMap: Record<string, number> = {};
-  private entriesCoordinates: Array<[string, number]> = [];
-  private eventEmitter = new EventEmitter();
-  private lastEntryName = "";
-  private offset = 0;
+const headings = ["h2", "h3"];
 
-  constructor(ref: MutableRefObject<ScrollView | null>) {
+const isHeading = (tnode: TNode) => headings.indexOf(tnode.tagName!) > -1;
+
+export default class Scroller {
+  public ref: MutableRefObject<FlatList<TNode> | null>;
+  private entriesMap: Record<string, number> = {};
+
+  private eventEmitter = new EventEmitter();
+
+  constructor(ref: MutableRefObject<FlatList<any> | null>) {
     this.ref = ref;
   }
 
-  handlers: ScrollViewProps = {
-    onContentSizeChange: () => {
-      this.entriesCoordinates = Object.entries(this.entriesMap).sort(
-        (a, b) => a[1] - b[1]
+  handlers: Partial<FlatListProps<TNode>> = {
+    onViewableItemsChanged: ({ changed }) => {
+      const visibleHeadings = changed.filter(
+        (v) => v.isViewable && isHeading(v.item)
       );
-    },
-    onScroll: ({ nativeEvent }) => {
-      const offsetY =
-        nativeEvent.contentOffset.y - this.offset + MIN_DIST_FROM_TOP_EDG;
-      const layoutHeight = nativeEvent.layoutMeasurement.height;
-      // We use a conditional to avoid overheading the JS thread on Android.
-      // On iOS, scrollEventThrottle will do the work.
-      if (Platform.OS !== "android" || Math.abs(nativeEvent.velocity!.y) < 1) {
-        for (let i = 0; i < this.entriesCoordinates.length; i++) {
-          const [entryName, lowerBound] = this.entriesCoordinates[i];
-          const upperBound =
-            i < this.entriesCoordinates.length - 1
-              ? this.entriesCoordinates[i + 1][1]
-              : lowerBound + layoutHeight;
-          if (offsetY >= lowerBound && offsetY < upperBound) {
-            if (entryName !== this.lastEntryName) {
-              this.eventEmitter.emit("select-entry", entryName);
-              this.lastEntryName = entryName;
-            }
-            break;
-          }
-        }
+      if (visibleHeadings.length) {
+        const first = visibleHeadings[0].item as TNode;
+        this.eventEmitter.emit("select-entry", textContent(first.domNode!));
       }
     },
   };
-
-  setOffset(offset: number) {
-    this.offset = offset;
-  }
 
   addSelectedEntryListener(listener: (entryName: string) => void) {
     this.eventEmitter.addListener("select-entry", listener);
@@ -62,14 +42,23 @@ export default class Scroller {
     this.eventEmitter.removeListener("select-entry", listener);
   }
 
-  registerScrollEntry(name: string, layout: LayoutChangeEvent) {
-    this.entriesMap[name] = layout.nativeEvent.layout.y;
+  registerScrollEntry(name: string, ref: MutableRefObject<View>) {
+    ref.current?.measureLayout(
+      this.ref.current!.getScrollableNode(),
+      (left, top) => {
+        this.entriesMap[name] = top;
+      },
+      () => {
+        console.info("Failed to measure!");
+      }
+    );
   }
 
   scrollToEntry(entryName: string) {
     if (entryName in this.entriesMap) {
-      this.ref.current?.scrollTo({
-        y: this.entriesMap[entryName] + this.offset - MIN_DIST_FROM_TOP_EDG,
+      const offset = this.entriesMap[entryName] - MIN_DIST_FROM_TOP_EDG;
+      this.ref.current?.scrollToOffset({
+        offset,
         animated: true,
       });
     }
