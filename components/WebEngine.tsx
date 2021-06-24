@@ -5,8 +5,10 @@ import {
   HTMLContentModel,
   HTMLElementModel,
   isDomElement,
+  ListElementConfig,
   MixedStyleDeclaration,
   MixedStyleRecord,
+  RenderHTMLConfig,
   RenderHTMLConfigProvider,
   TBlock,
   TRenderEngineConfig,
@@ -226,6 +228,17 @@ const selectDomRoot: TRenderEngineConfig["selectDomRoot"] = (node) =>
 const ignoreDomNode: TRenderEngineConfig["ignoreDomNode"] = (node) =>
   isDomElement(node) && !!node.attribs.class?.match(/hash-link/);
 
+const listConfig: ListElementConfig = {
+  markerBoxStyle: {
+    paddingRight: 2,
+  },
+};
+
+const renderersProps: RenderHTMLConfig["renderersProps"] = {
+  ol: listConfig,
+  ul: listConfig,
+};
+
 export default function WebEngine({ children }: React.PropsWithChildren<{}>) {
   const textColor = useThemeColor("text");
   const anchorBackground = useThemeColor("anchorBackground");
@@ -259,6 +272,7 @@ export default function WebEngine({ children }: React.PropsWithChildren<{}>) {
     >
       <RenderHTMLConfigProvider
         renderers={renderers}
+        renderersProps={renderersProps}
         enableExperimentalMarginCollapsing
       >
         {children}
