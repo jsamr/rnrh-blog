@@ -115,6 +115,15 @@ const ArticleRenderer: CustomBlockRenderer = function ArticleRenderer({
   ...props
 }) {
   const scroller = useScroller();
+  // We know the structure of the DOM beforehand:
+  // <article>
+  //   <header>...</header>
+  //   <div class="markdown"> ... </div>
+  // </article>
+  // Thus we want to flatten the nodes from the markdown element
+  // and render each node in a FlatList cell. That way, the first render
+  // will only draw 2 items (initialNumToRender), increasing dramatically
+  // the "time to first contentful paint".
   const children = useMemo(() => {
     return props.tnode.children
       .map((c) => {
@@ -130,6 +139,9 @@ const ArticleRenderer: CustomBlockRenderer = function ArticleRenderer({
       return (
         <TNodeRenderer
           propsFromParent={{
+            // In normal circumstances, this is handled by TChildrenRenderer.
+            // But since we are rendering each TNode in isolation, we need to
+            // implement margin collapsing manually.
             collapsedMarginTop: collapseTopMarginForChild(index, children),
           }}
           tnode={item}
@@ -158,7 +170,6 @@ const styles = StyleSheet.create({
   },
   content: {
     flexGrow: 1,
-    // alignSelf: "center",
     paddingHorizontal: 10,
     // leave some space for the FAB
     paddingBottom: 65,
