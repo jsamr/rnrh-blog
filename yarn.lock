@@ -5328,10 +5328,10 @@ react-native-paper@^4:
     color "^3.1.2"
     react-native-iphone-x-helper "^1.3.1"
 
-react-native-render-html@^6.0.0-beta.3:
-  version "6.0.0-beta.3"
-  resolved "https://registry.yarnpkg.com/react-native-render-html/-/react-native-render-html-6.0.0-beta.3.tgz#1368f4ea2371f7eaff6bd6025fc0e947c225a0e4"
-  integrity sha512-1sTCyu3y0RWD+dGnsH+BYfOUhSEIjQNUkZef3ODqr3UAShnMCVXFbrll/7fYgwSBAQhH4hNw8or9mITBt3p2NQ==
+react-native-render-html@^6.0.0-beta.4:
+  version "6.0.0-beta.4"
+  resolved "https://registry.yarnpkg.com/react-native-render-html/-/react-native-render-html-6.0.0-beta.4.tgz#ad62f59c893f3d68b92e48d1e27a5bf1a0a0d429"
+  integrity sha512-FUNkNZm1Om/zAfErIdQnG6wKyqL5a4yXUjsaLv3aHfs9jZDmGIg6aBq4YjYiry36BaC/ABGsI3hEdhrv5stu+g==
   dependencies:
     "@jsamr/counter-style" "^2.0.1"
     "@jsamr/react-native-li" "^2.2.1"
