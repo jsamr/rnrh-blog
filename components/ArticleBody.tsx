@@ -7,6 +7,7 @@ import { ActivityIndicator } from "react-native-paper";
 import { useScroller } from "../utils/scroller";
 import { useState } from "react";
 import { useEffect } from "react";
+import { InteractionManager } from "react-native";
 
 function LoadingDisplay() {
   return (
@@ -24,8 +25,10 @@ function useDelayedLoading(dom: Document | null) {
   useEffect(
     useCallback(
       function onFocus() {
-        const timeout = setTimeout(() => setIsLoading(dom == null), 100);
-        return () => clearTimeout(timeout);
+        const handle = InteractionManager.runAfterInteractions(() =>
+          setIsLoading(dom == null)
+        );
+        return () => handle.cancel();
       },
       [dom]
     )

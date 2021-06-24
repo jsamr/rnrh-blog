@@ -239,6 +239,8 @@ const renderersProps: RenderHTMLConfig["renderersProps"] = {
   ul: listConfig,
 };
 
+const defaultTextProps = { selectable: true };
+
 export default function WebEngine({ children }: React.PropsWithChildren<{}>) {
   const textColor = useThemeColor("text");
   const anchorBackground = useThemeColor("anchorBackground");
@@ -273,6 +275,7 @@ export default function WebEngine({ children }: React.PropsWithChildren<{}>) {
       <RenderHTMLConfigProvider
         renderers={renderers}
         renderersProps={renderersProps}
+        defaultTextProps={defaultTextProps}
         enableExperimentalMarginCollapsing
       >
         {children}
