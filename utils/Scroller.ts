@@ -15,6 +15,7 @@ const isHeading = (tnode: TNode) => headings.indexOf(tnode.tagName!) > -1;
 export default class Scroller {
   public ref: MutableRefObject<FlatList<TNode> | null>;
   private entriesMap: Record<string, number> = {};
+  private lastSelectedHeading: TNode | null = null;
 
   private eventEmitter = new EventEmitter();
 
@@ -23,13 +24,17 @@ export default class Scroller {
   }
 
   handlers: Partial<FlatListProps<TNode>> = {
-    onViewableItemsChanged: ({ changed }) => {
-      const visibleHeadings = changed.filter(
-        (v) => v.isViewable && isHeading(v.item)
-      );
-      if (visibleHeadings.length) {
-        const first = visibleHeadings[0].item as TNode;
-        this.eventEmitter.emit("select-entry", textContent(first.domNode!));
+    viewabilityConfig: {
+      viewAreaCoveragePercentThreshold: 15,
+    },
+    onViewableItemsChanged: ({ viewableItems }) => {
+      const first = viewableItems[0];
+      if (first && isHeading(first.item)) {
+        const tnode = first.item as TNode;
+        if (tnode !== this.lastSelectedHeading) {
+          this.eventEmitter.emit("select-entry", textContent(tnode.domNode!));
+          this.lastSelectedHeading = tnode;
+        }
       }
     },
   };
