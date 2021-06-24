@@ -8,4 +8,6 @@
 - Progressive rendering for non-blocking loading with `FlatList`;
 - Video support with `expo-av`.
 
+[**Try out the app on Expo.**](https://expo.io/@jsamr/react-native-blog)
+
 Go to the [**main**](https://github.com/jsamr/rnrh-blog/tree/main) branch for the simple version.
