@@ -1717,10 +1717,10 @@
   dependencies:
     css-to-react-native "^3.0.0"
 
-"@native-html/transient-render-engine@^9.0.3":
-  version "9.0.3"
-  resolved "https://registry.yarnpkg.com/@native-html/transient-render-engine/-/transient-render-engine-9.0.3.tgz#ccfd798b3168ca324c7d5987a0914b1e50e658fb"
-  integrity sha512-ygW3qARku/1ErQVvwe3nqCS1C+u++1MFUX2GJo5TLO4zjqltyAgCrall66fm1nsVJSxAvBqlzQQ1x3wBSzdm3Q==
+"@native-html/transient-render-engine@^9.1.0":
+  version "9.1.0"
+  resolved "https://registry.yarnpkg.com/@native-html/transient-render-engine/-/transient-render-engine-9.1.0.tgz#2b22d78f07446cf464224de157960bee2af9e217"
+  integrity sha512-Z+0d9SA67edhNsE68Hklfe2L23i//VYucwR3Vb2l5qtgVYG2t54LVOy0AB//+N5qzIyn6OYra5M+dYPmtMkByg==
   dependencies:
     "@native-html/css-processor" "1.9.0"
     "@types/ramda" "^0.27.40"
@@ -5473,14 +5473,14 @@ react-native-reanimated@~2.1.0:
     mockdate "^3.0.2"
     string-hash-64 "^1.0.3"
 
-react-native-render-html@^6.0.0-beta.4:
-  version "6.0.0-beta.4"
-  resolved "https://registry.yarnpkg.com/react-native-render-html/-/react-native-render-html-6.0.0-beta.4.tgz#ad62f59c893f3d68b92e48d1e27a5bf1a0a0d429"
-  integrity sha512-FUNkNZm1Om/zAfErIdQnG6wKyqL5a4yXUjsaLv3aHfs9jZDmGIg6aBq4YjYiry36BaC/ABGsI3hEdhrv5stu+g==
+react-native-render-html@^6.0.0-beta.5:
+  version "6.0.0-beta.5"
+  resolved "https://registry.yarnpkg.com/react-native-render-html/-/react-native-render-html-6.0.0-beta.5.tgz#cf7b0c8418ab9048571bf5e7c0f69977f0c475a4"
+  integrity sha512-L2WeoQPGZnxomCAxy4zieYNXi7yjw7IwzBsb+x8Tl0C5Fn+gWjnORx89exwLx2OML5Pp8hdUDoqQHb+Hq4dNzg==
   dependencies:
     "@jsamr/counter-style" "^2.0.1"
     "@jsamr/react-native-li" "^2.2.1"
-    "@native-html/transient-render-engine" "^9.0.3"
+    "@native-html/transient-render-engine" "^9.1.0"
     "@types/ramda" "^0.27.40"
     "@types/urijs" "^1.19.15"
     prop-types "^15.5.7"

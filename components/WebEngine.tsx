@@ -11,10 +11,11 @@ import {
   RenderHTMLConfig,
   RenderHTMLConfigProvider,
   TBlock,
-  TChildrenRenderer,
   TNode,
+  TNodeRenderer,
   TRenderEngineConfig,
   TRenderEngineProvider,
+  collapseTopMarginForChild,
   useComputeMaxWidthForTag,
   useContentWidth,
   useInternalRenderer,
@@ -41,14 +42,11 @@ function findSource(tnode: TBlock) {
 const VideoRenderer: CustomBlockRenderer = function VideoRenderer({
   tnode,
   style,
-  key,
 }) {
-  const uri = findSource(tnode);
   const computeMaxWidth = useComputeMaxWidthForTag("video");
   const width = computeMaxWidth(useContentWidth());
   return (
     <Video
-      key={key}
       useNativeControls
       resizeMode="contain"
       style={[{ aspectRatio: 16 / 9 }, style, { width }]}
@@ -112,10 +110,6 @@ const DivRenderer: CustomBlockRenderer = function DivRenderer({
   return <TDefaultRenderer {...props} />;
 };
 
-const renderChild = ({ item }: ListRenderItemInfo<TNode>) => {
-  return <TChildrenRenderer tchildren={[item]} />;
-};
-
 const ArticleRenderer: CustomBlockRenderer = function ArticleRenderer({
   TDefaultRenderer,
   ...props
@@ -131,6 +125,19 @@ const ArticleRenderer: CustomBlockRenderer = function ArticleRenderer({
       })
       .flat();
   }, [props.tnode]);
+  const renderChild = useCallback(
+    ({ item, index }: ListRenderItemInfo<TNode>) => {
+      return (
+        <TNodeRenderer
+          propsFromParent={{
+            collapsedMarginTop: collapseTopMarginForChild(index, children),
+          }}
+          tnode={item}
+        />
+      );
+    },
+    [children]
+  );
   return (
     <FlatList
       {...scroller.handlers}
@@ -248,9 +255,6 @@ const tagsStyles: MixedStyleRecord = {
     borderLeftWidth: 10,
     borderLeftColor: "#ffe564",
     color: Colors.textDark,
-  },
-  p: {
-    marginBottom: 0,
   },
 };
 
