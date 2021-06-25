@@ -5,25 +5,37 @@ import { Element } from "domhandler";
 import TOCEntry from "./TOCEntry";
 import useOnEntryChangeEffect from "../hooks/useOnEntryChangeEffect";
 import useThemeColor from "../hooks/useThemeColor";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Button from "./Button";
 
 export default function TOC({
   headings,
   onPressEntry,
+  title,
 }: {
   headings: Element[];
+  title: string;
   onPressEntry?: (name: string) => void;
 }) {
   const surface = useThemeColor("card");
-  const [activeEntry, setActiveEntry] = useState(
-    headings.length ? textContent(headings[0]) : ""
-  );
+  const { top: topOffset } = useSafeAreaInsets();
+  const [activeEntry, setActiveEntry] = useState("");
   useOnEntryChangeEffect(setActiveEntry);
   return (
     <ScrollView
-      contentContainerStyle={styles.scrollContent}
+      contentContainerStyle={[
+        styles.scrollContent,
+        { paddingTop: topOffset + 10 },
+      ]}
       style={[styles.scrollView, { backgroundColor: surface }]}
     >
       <View style={styles.scrollBackground} />
+      <Button
+        label={title}
+        active={activeEntry === ""}
+        textStyle={styles.titleLabel}
+        onPress={() => onPressEntry?.("")}
+      />
       {headings.map((header) => {
         const headerName = textContent(header);
         const onPress = () => {
@@ -36,7 +48,7 @@ export default function TOC({
             key={headerName}
             onPress={onPress}
             tagName={header.tagName}
-            headerName={headerName}
+            label={headerName}
           />
         );
       })}
@@ -62,5 +74,9 @@ const styles = StyleSheet.create({
     borderRightWidth: 1,
     marginRight: 10,
     borderColor: "rgba(125,125,125,0.3)",
+  },
+  titleLabel: {
+    fontWeight: "bold",
+    fontSize: 18,
   },
 });

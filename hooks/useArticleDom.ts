@@ -27,6 +27,7 @@ function useFetchHtml(url: string) {
 }
 
 export default function useArticleDom(url: string) {
+  // @refresh reset
   const engine = useAmbientTRenderEngine();
   const [headings, setHeadings] = useState<Element[]>([]);
   const { html } = useFetchHtml(url);

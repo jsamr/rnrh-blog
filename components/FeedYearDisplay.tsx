@@ -1,13 +1,12 @@
 import React from "react";
 import { Headline } from "react-native-paper";
-import useThemeColor from "../hooks/useThemeColor";
 
 export default function FeedYearDisplay({ title }: { title: string }) {
-  const textColor = useThemeColor("tint");
+  const color = 'rgb(118, 118, 118)';
   return (
     <Headline
       style={{
-        color: textColor,
+        color,
         paddingHorizontal: 10,
         lineHeight: 30,
         paddingTop: 9,
@@ -15,7 +14,7 @@ export default function FeedYearDisplay({ title }: { title: string }) {
         marginBottom: 10,
         marginTop: 30,
         fontSize: 30,
-        borderBottomColor: textColor,
+        borderBottomColor: color,
         borderBottomWidth: 2,
         borderRadius: 4,
         alignSelf: "center",

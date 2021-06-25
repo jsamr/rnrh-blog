@@ -1,6 +1,5 @@
-import React, { useCallback, useMemo, useRef } from "react";
+import React, { useMemo } from "react";
 import {
-  CustomBlockRenderer,
   CustomTagRendererRecord,
   HTMLContentModel,
   HTMLElementModel,
@@ -10,176 +9,24 @@ import {
   MixedStyleRecord,
   RenderHTMLConfig,
   RenderHTMLConfigProvider,
-  TBlock,
-  TNode,
-  TNodeRenderer,
   TRenderEngineConfig,
   TRenderEngineProvider,
-  collapseTopMarginForChild,
-  useComputeMaxWidthForTag,
-  useContentWidth,
-  useInternalRenderer,
 } from "react-native-render-html";
-import { FlatList, ScrollView } from "react-native-gesture-handler";
-import { Video } from "expo-av";
-import { ListRenderItemInfo, StyleSheet } from "react-native";
-import { findOne, textContent } from "domutils";
-import { useScroller } from "../utils/scroller";
+import { findOne } from "domutils";
 import useThemeColor from "../hooks/useThemeColor";
 import Colors from "../utils/Colors";
-
-function findSource(tnode: TBlock) {
-  if (tnode.attributes.src) {
-    return tnode.attributes.src;
-  }
-  const sourceElms = findOne(
-    (elm) => elm.tagName === "source",
-    tnode.domNode.children
-  );
-  return sourceElms ? sourceElms.attribs.src : "";
-}
-
-const VideoRenderer: CustomBlockRenderer = function VideoRenderer({
-  tnode,
-  style,
-}) {
-  const computeMaxWidth = useComputeMaxWidthForTag("video");
-  const width = computeMaxWidth(useContentWidth());
-  return (
-    <Video
-      useNativeControls
-      resizeMode="contain"
-      style={[{ aspectRatio: 16 / 9 }, style, { width }]}
-      source={{ uri: findSource(tnode) }}
-    />
-  );
-};
-
-const HeadingRenderer: CustomBlockRenderer = function HeaderRenderer({
-  TDefaultRenderer,
-  ...props
-}) {
-  const scroller = useScroller();
-  const ref = useRef<any>();
-  const onLayout = useCallback(() => {
-    scroller.registerScrollEntry(textContent(props.tnode.domNode!), ref);
-  }, [scroller]);
-  return <TDefaultRenderer {...props} viewProps={{ onLayout, ref } as any} />;
-};
-
-const ImageRenderer: CustomBlockRenderer = function ImageRenderer(props) {
-  const { Renderer, rendererProps } = useInternalRenderer("img", props);
-  if ((props.tnode.parent?.classes.indexOf("avatar__photo") || -1) > -1) {
-    return <Renderer {...rendererProps} width={50} height={50} />;
-  }
-  return <Renderer {...rendererProps} style={{}} />;
-};
-
-const ParagraphRenderer: CustomBlockRenderer = function ParagraphRenderer({
-  TDefaultRenderer,
-  tnode,
-  ...props
-}) {
-  const marginsFixture =
-    tnode.markers.olNestLevel > -1 || tnode.markers.ulNestLevel > -1
-      ? { marginTop: 0, marginBottom: 0 }
-      : null;
-  return (
-    <TDefaultRenderer
-      {...props}
-      tnode={tnode}
-      style={[props.style, marginsFixture]}
-    />
-  );
-};
-
-const DivRenderer: CustomBlockRenderer = function DivRenderer({
-  TDefaultRenderer,
-  ...props
-}) {
-  if (props.tnode.classes.indexOf("prism-code") > -1) {
-    return (
-      <ScrollView horizontal style={props.style}>
-        <TDefaultRenderer
-          {...props}
-          style={[{ flexGrow: 1, flexShrink: 1, padding: 10 }]}
-        />
-      </ScrollView>
-    );
-  }
-  return <TDefaultRenderer {...props} />;
-};
-
-const ArticleRenderer: CustomBlockRenderer = function ArticleRenderer({
-  TDefaultRenderer,
-  ...props
-}) {
-  const scroller = useScroller();
-  // We know the structure of the DOM beforehand:
-  // <article>
-  //   <header>...</header>
-  //   <div class="markdown"> ... </div>
-  // </article>
-  // Thus we want to flatten the nodes from the markdown element
-  // and render each node in a FlatList cell. That way, the first render
-  // will only draw 2 items (initialNumToRender), increasing dramatically
-  // the "time to first contentful paint".
-  const children = useMemo(() => {
-    return props.tnode.children
-      .map((c) => {
-        if (c.classes.includes("markdown")) {
-          return c.children;
-        }
-        return c;
-      })
-      .flat();
-  }, [props.tnode]);
-  const renderChild = useCallback(
-    ({ item, index }: ListRenderItemInfo<TNode>) => {
-      return (
-        <TNodeRenderer
-          propsFromParent={{
-            // In normal circumstances, this is handled by TChildrenRenderer.
-            // But since we are rendering each TNode in isolation, we need to
-            // implement margin collapsing manually.
-            collapsedMarginTop: collapseTopMarginForChild(index, children),
-          }}
-          tnode={item}
-        />
-      );
-    },
-    [children]
-  );
-  return (
-    <FlatList
-      {...scroller.handlers}
-      ref={scroller.ref as any}
-      renderItem={renderChild}
-      keyExtractor={(item, index) => `${item.tagName}-${index}`}
-      initialNumToRender={2}
-      style={styles.container}
-      contentContainerStyle={styles.content}
-      data={children}
-    />
-  );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-  },
-  content: {
-    flexGrow: 1,
-    paddingHorizontal: 10,
-    // leave some space for the FAB
-    paddingBottom: 65,
-  },
-});
+import VideoRenderer from "../web/VideoRenderer";
+import ArticleRenderer from "../web/ArticleRenderer";
+import HeadingRenderer from "../web/HeadingRenderer";
+import ImageRenderer from "../web/ImageRenderer";
+import ParagraphRenderer from "../web/ParagraphRenderer";
+import DivRenderer from "../web/DivRenderer";
 
 const customElementModels = {
   video: HTMLElementModel.fromCustomModel({
     contentModel: HTMLContentModel.block,
     tagName: "video",
+    isOpaque: true,
   }),
 };
 
@@ -249,6 +96,12 @@ const tagsStyles: MixedStyleRecord = {
   img: {
     alignSelf: "center",
   },
+  h1: {
+    marginVertical: 15,
+    paddingBottom: 5,
+    fontSize: 55,
+    lineHeight: 55 * 1.2,
+  },
   h4: {
     marginBottom: 0,
     marginTop: 0,
@@ -279,7 +132,7 @@ const ignoreDomNode: TRenderEngineConfig["ignoreDomNode"] = (node) =>
 
 const listConfig: ListElementConfig = {
   markerBoxStyle: {
-    paddingRight: 2,
+    paddingRight: 6,
   },
 };
 

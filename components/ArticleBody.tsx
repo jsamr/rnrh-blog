@@ -1,13 +1,8 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { StyleSheet, View } from "react-native";
 import { useWindowDimensions } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
 import { RenderHTMLSource, Document } from "react-native-render-html";
 import { ActivityIndicator } from "react-native-paper";
-import { useScroller } from "../utils/scroller";
-import { useState } from "react";
-import { useEffect } from "react";
-import { InteractionManager } from "react-native";
 
 function LoadingDisplay() {
   return (
@@ -19,11 +14,7 @@ function LoadingDisplay() {
 
 const HZ_MARGIN = 10;
 
-export default function ArticleBody({
-  dom,
-}: {
-  dom: Document | null;
-}) {
+export default function ArticleBody({ dom }: { dom: Document | null }) {
   const { width } = useWindowDimensions();
   const availableWidth = Math.min(width, 500);
   return !dom ? (

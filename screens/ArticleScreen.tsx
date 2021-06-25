@@ -12,6 +12,8 @@ import { ScrollerProvider } from "../utils/scroller";
 import { StatusBar } from "expo-status-bar";
 import useColorScheme from "../hooks/useColorScheme";
 import useThemeColor from "../hooks/useThemeColor";
+import CollapsibleArticleHeader from "../components/CollapsibleArticleHeader";
+import { ScrollStateProvider, useScrollState } from "../utils/scroll-anim";
 
 type ArticleScreenProps = StackScreenProps<RootStackParamList, "Article">;
 
@@ -41,7 +43,11 @@ function useDrawer() {
 
 function useScrollFeature(scrollerDep: any) {
   const scrollViewRef = useRef<null | FlatList<any>>(null);
-  const scroller = useMemo(() => new Scroller(scrollViewRef), [scrollerDep]);
+  const { headerHeight: topOffset } = useScrollState();
+  const scroller = useMemo(
+    () => new Scroller(scrollViewRef, topOffset),
+    [scrollerDep, topOffset]
+  );
   return {
     scroller,
     scrollViewRef,
@@ -61,23 +67,33 @@ function ThemedFAB({ onPress }: { onPress: any }) {
   );
 }
 
-export default function ArticleScreen(props: ArticleScreenProps) {
+function ArticleContent(props: ArticleScreenProps) {
   useSetTitleEffect(props);
   const url = props.route.params.url;
   const colorScheme = useColorScheme();
   const { dom, headings } = useArticleDom(url);
   const { drawerRef, openDrawer, closeDrawer } = useDrawer();
-  const { scrollViewRef, scroller } = useScrollFeature(url);
+  const { scroller } = useScrollFeature(url);
   const onPressEntry = useCallback(
     (entry: string) => {
       closeDrawer();
-      scroller.scrollToEntry(entry);
+      if (entry) {
+        scroller.scrollToEntry(entry);
+      } else {
+        scroller.scrollToTop();
+      }
     },
     [scroller]
   );
   const renderToc = useCallback(
     function renderToc() {
-      return <TOC headings={headings} onPressEntry={onPressEntry} />;
+      return (
+        <TOC
+          title={props.route.params.title}
+          headings={headings}
+          onPressEntry={onPressEntry}
+        />
+      );
     },
     [headings]
   );
@@ -91,9 +107,18 @@ export default function ArticleScreen(props: ArticleScreenProps) {
       >
         <ArticleBody dom={dom} />
         <ThemedFAB onPress={openDrawer} />
+        <CollapsibleArticleHeader />
       </DrawerLayout>
       <StatusBar animated style={colorScheme === "dark" ? "light" : "dark"} />
     </ScrollerProvider>
+  );
+}
+
+export default function ArticleScreen(props: ArticleScreenProps) {
+  return (
+    <ScrollStateProvider>
+      <ArticleContent {...props} />
+    </ScrollStateProvider>
   );
 }
 

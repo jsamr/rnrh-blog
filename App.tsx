@@ -33,7 +33,7 @@ function Navigator() {
       />
       <Stack.Screen
         name="Article"
-        options={{ headerShown: true }}
+        options={{ headerShown: false }}
         component={ArticleScreen}
       />
     </Stack.Navigator>

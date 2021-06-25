@@ -16,16 +16,18 @@ export default class Scroller {
   public ref: MutableRefObject<FlatList<TNode> | null>;
   private entriesMap: Record<string, number> = {};
   private lastSelectedHeading: TNode | null = null;
+  private topOffset: number = 0;
 
   private eventEmitter = new EventEmitter();
 
-  constructor(ref: MutableRefObject<FlatList<any> | null>) {
+  constructor(ref: MutableRefObject<FlatList<any> | null>, topOffset: number) {
     this.ref = ref;
+    this.topOffset = topOffset;
   }
 
   handlers: Partial<FlatListProps<TNode>> = {
     viewabilityConfig: {
-      viewAreaCoveragePercentThreshold: 15,
+      viewAreaCoveragePercentThreshold: 30,
     },
     onViewableItemsChanged: ({ viewableItems }) => {
       const first = viewableItems[0];
@@ -35,6 +37,8 @@ export default class Scroller {
           this.eventEmitter.emit("select-entry", textContent(tnode.domNode!));
           this.lastSelectedHeading = tnode;
         }
+      } else if (first && first.index === 0) {
+        this.eventEmitter.emit("select-entry", "");
       }
     },
   };
@@ -51,12 +55,16 @@ export default class Scroller {
     ref.current?.measureLayout(
       this.ref.current!.getScrollableNode(),
       (left, top) => {
-        this.entriesMap[name] = top;
+        this.entriesMap[name] = top - this.topOffset;
       },
       () => {
         console.info("Failed to measure!");
       }
     );
+  }
+
+  scrollToTop() {
+    this.ref.current?.scrollToOffset({ offset: 0, animated: true });
   }
 
   scrollToEntry(entryName: string) {
