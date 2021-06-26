@@ -5,7 +5,9 @@
 **This is the enhanced version, with refined styles and a few extra features**:
 
 - Cached queries with `react-queries`;
+- Dark mode (follows system mode);
 - Progressive rendering for non-blocking loading with `FlatList`;
+- Collapsible header with `react-native-reanimated` (v2);
 - Video support with `expo-av`.
 
 [**Try out the app on Expo.**](https://expo.io/@jsamr/react-native-blog)
