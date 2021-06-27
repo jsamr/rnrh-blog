@@ -21,6 +21,7 @@ import HeadingRenderer from "../web/HeadingRenderer";
 import ImageRenderer from "../web/ImageRenderer";
 import ParagraphRenderer from "../web/ParagraphRenderer";
 import DivRenderer from "../web/DivRenderer";
+import { TextProps } from "react-native";
 
 const customElementModels = {
   video: HTMLElementModel.fromCustomModel({
@@ -141,7 +142,7 @@ const renderersProps: RenderHTMLConfig["renderersProps"] = {
   ul: listConfig,
 };
 
-const defaultTextProps = { selectable: true };
+const defaultTextProps: TextProps = { selectable: true };
 
 export default function WebEngine({ children }: React.PropsWithChildren<{}>) {
   const textColor = useThemeColor("text");

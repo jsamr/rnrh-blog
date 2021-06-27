@@ -14,9 +14,6 @@ export default function FeedYearDisplay({ title }: { title: string }) {
         marginBottom: 10,
         marginTop: 30,
         fontSize: 30,
-        borderBottomColor: color,
-        borderBottomWidth: 2,
-        borderRadius: 4,
         alignSelf: "center",
       }}
     >

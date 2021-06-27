@@ -7,12 +7,7 @@ import {
 } from "react-native-render-html";
 import { FlatList } from "react-native-gesture-handler";
 import { ListRenderItemInfo, StyleSheet } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Animated from "react-native-reanimated";
-import {
-  useAnimatedScrollHandler,
-  useSharedValue,
-} from "react-native-reanimated";
 import { useScroller } from "../utils/scroller";
 import { useScrollState } from "../utils/scroll-anim";
 

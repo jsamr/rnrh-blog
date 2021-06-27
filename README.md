@@ -6,7 +6,7 @@
 
 - Cached queries with `react-queries`;
 - Dark mode (follows system mode);
-- Progressive rendering for non-blocking loading with `FlatList`;
+- Progressive rendering for fast time to first contentful paint via `FlatList`;
 - Collapsible header with `react-native-reanimated` (v2);
 - Video support with `expo-av`.
 
