@@ -82,18 +82,14 @@ const classesStyles: MixedStyleRecord = {
     backgroundColor: "#282c34",
     fontFamily: "monospace",
     borderRadius: 10,
-    fontSize: 12,
-    lineHeight: 12 * 1.6,
+    fontSize: 14,
+    lineHeight: 14 * 1.6,
     flexShrink: 0,
     whiteSpace: "normal",
   },
 };
 
 const tagsStyles: MixedStyleRecord = {
-  a: {
-    color: "#1c1e21",
-    backgroundColor: "rgba(187, 239, 253, 0.3)",
-  },
   li: {
     marginBottom: 10,
   },
@@ -112,6 +108,7 @@ const tagsStyles: MixedStyleRecord = {
   },
   code: {
     backgroundColor: "rgba(0, 0, 0, 0.06)",
+    fontSize: 14,
   },
   blockquote: {
     marginLeft: 0,
