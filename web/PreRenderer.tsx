@@ -2,16 +2,16 @@ import React from "react";
 import { CustomBlockRenderer } from "react-native-render-html";
 import { ScrollView } from "react-native-gesture-handler";
 
-const DivRenderer: CustomBlockRenderer = function DivRenderer({
+const PreRenderer: CustomBlockRenderer = function PreRenderer({
   TDefaultRenderer,
   ...props
 }) {
-  if (props.tnode.classes.indexOf("prism-code") > -1) {
+  if (props.tnode.hasClass("prism-code")) {
     return (
       <ScrollView horizontal style={props.style}>
         <TDefaultRenderer
           {...props}
-          style={[{ flexGrow: 1, flexShrink: 1, padding: 10 }]}
+          style={{ flexGrow: 1, flexShrink: 1, padding: 10 }}
         />
       </ScrollView>
     );
@@ -19,4 +19,4 @@ const DivRenderer: CustomBlockRenderer = function DivRenderer({
   return <TDefaultRenderer {...props} />;
 };
 
-export default DivRenderer;
+export default PreRenderer;

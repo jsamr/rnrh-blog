@@ -20,8 +20,9 @@ import ArticleRenderer from "../web/ArticleRenderer";
 import HeadingRenderer from "../web/HeadingRenderer";
 import ImageRenderer from "../web/ImageRenderer";
 import ParagraphRenderer from "../web/ParagraphRenderer";
-import DivRenderer from "../web/DivRenderer";
 import { TextProps } from "react-native";
+import PreRenderer from "../web/PreRenderer";
+import SpanRenderer from "../web/SpanRenderer";
 
 const customElementModels = {
   video: HTMLElementModel.fromCustomModel({
@@ -37,8 +38,9 @@ const renderers: CustomTagRendererRecord = {
   h3: HeadingRenderer,
   img: ImageRenderer,
   p: ParagraphRenderer,
-  div: DivRenderer,
   video: VideoRenderer,
+  pre: PreRenderer,
+  span: SpanRenderer
 };
 
 const classesStyles: MixedStyleRecord = {
@@ -75,14 +77,15 @@ const classesStyles: MixedStyleRecord = {
   },
   "token-line": {
     whiteSpace: "pre",
-    lineHeight: 12 * 1.4,
   },
   "prism-code": {
     backgroundColor: "#282c34",
     fontFamily: "monospace",
     borderRadius: 10,
     fontSize: 12,
+    lineHeight: 12 * 1.6,
     flexShrink: 0,
+    whiteSpace: "normal",
   },
 };
 
@@ -109,7 +112,6 @@ const tagsStyles: MixedStyleRecord = {
   },
   code: {
     backgroundColor: "rgba(0, 0, 0, 0.06)",
-    fontSize: 14,
   },
   blockquote: {
     marginLeft: 0,
