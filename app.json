@@ -7,15 +7,15 @@
     "orientation": "default",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
-    "backgroundColor": "#282c34",
+    // "backgroundColor": "#282c34",
     "androidStatusBar": {
       "barStyle": "light-content"
     },
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "cover",
-      "backgroundColor": "#282c34"
-    },
+    // "splash": {
+    //   "image": "./assets/splash.png",
+    //   "resizeMode": "cover",
+    //   "backgroundColor": "#282c34"
+    // },
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -23,9 +23,11 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "userInterfaceStyle": "automatic"
     },
     "android": {
+      "userInterfaceStyle": "automatic",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#282c34"
