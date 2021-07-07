@@ -6,24 +6,19 @@ import {
   TNode,
 } from "react-native-render-html";
 
-function hasLineReturn(tnode: TNode): boolean {
-  const lastChild = tnode.children.length
-    ? tnode.children[tnode.children.length - 1]
-    : null;
-  if (lastChild) {
-    if (lastChild.type === "text" && lastChild.data.endsWith("\n")) {
-      return true;
-    }
-    return hasLineReturn(lastChild);
+function tnodeEndsWithNewLine(tnode: TNode): boolean {
+  if (tnode.type === "text") {
+    return tnode.data.endsWith("\n");
   }
-  return false;
+  const lastChild = tnode.children[tnode.children.length - 1];
+  return lastChild ? tnodeEndsWithNewLine(lastChild) : false;
 }
 
 const SpanRenderer: CustomTextualRenderer = function SpanRenderer({
   TDefaultRenderer,
   ...props
 }) {
-  if (props.tnode.hasClass("token-line") && !hasLineReturn(props.tnode)) {
+  if (props.tnode.hasClass("token-line") && !tnodeEndsWithNewLine(props.tnode)) {
     return (
       <TDefaultRenderer {...props}>
         <TChildrenRenderer tchildren={props.tnode.children} />
