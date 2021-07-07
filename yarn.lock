@@ -1710,19 +1710,19 @@
   resolved "https://registry.yarnpkg.com/@jsamr/react-native-li/-/react-native-li-2.2.1.tgz#77a737e82899916a25c59fec441595286c7016e5"
   integrity sha512-24lfABRzLai11PQSWMdOtwfHAr/2pnWM2adO7npE6aNFJ31u3NCp0+zlYKuo4wdOy32QI5t57KvRDKJjlWvefQ==
 
-"@native-html/css-processor@1.9.0":
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/@native-html/css-processor/-/css-processor-1.9.0.tgz#7f5ef35734bcfb0f2951a091fe191aab75eb7313"
-  integrity sha512-5qDgAPUYuEMhV4z1sfQhAq95iFkt0dBn62JDzypoANd8MRmtfjCX7UC8HLGQJ6DZVwy7tUzxKFeunohLxGwuDA==
+"@native-html/css-processor@1.10.1":
+  version "1.10.1"
+  resolved "https://registry.yarnpkg.com/@native-html/css-processor/-/css-processor-1.10.1.tgz#3cb9bac71c87ff40cd4b004a61dbf6284ad6c422"
+  integrity sha512-Z5dNwMrhvEDRNgz0wNGFyC3Huvpe8HK3AjGfNYLU0/FZeNbzIKOvGxJqAjricegxbkxwnV/VMHPUG6zZwSUT5w==
   dependencies:
     css-to-react-native "^3.0.0"
 
-"@native-html/transient-render-engine@^9.0.3":
-  version "9.0.3"
-  resolved "https://registry.yarnpkg.com/@native-html/transient-render-engine/-/transient-render-engine-9.0.3.tgz#ccfd798b3168ca324c7d5987a0914b1e50e658fb"
-  integrity sha512-ygW3qARku/1ErQVvwe3nqCS1C+u++1MFUX2GJo5TLO4zjqltyAgCrall66fm1nsVJSxAvBqlzQQ1x3wBSzdm3Q==
+"@native-html/transient-render-engine@^9.2.1":
+  version "9.2.1"
+  resolved "https://registry.yarnpkg.com/@native-html/transient-render-engine/-/transient-render-engine-9.2.1.tgz#a98bb4c5515bd7884cfef75c10a8c41f7ef9d1b2"
+  integrity sha512-Lmvh2x0G5drN/mvR5r8M5+jZgTd2DeIWMOtJ8uTpU/ngVorEE3PzF47gYfcs4rEIqE95t1631gpwTrvHXgePAw==
   dependencies:
-    "@native-html/css-processor" "1.9.0"
+    "@native-html/css-processor" "1.10.1"
     "@types/ramda" "^0.27.40"
     csstype "^3.0.8"
     domelementtype "^2.2.0"
@@ -5328,14 +5328,14 @@ react-native-paper@^4:
     color "^3.1.2"
     react-native-iphone-x-helper "^1.3.1"
 
-react-native-render-html@^6.0.0-beta.4:
-  version "6.0.0-beta.4"
-  resolved "https://registry.yarnpkg.com/react-native-render-html/-/react-native-render-html-6.0.0-beta.4.tgz#ad62f59c893f3d68b92e48d1e27a5bf1a0a0d429"
-  integrity sha512-FUNkNZm1Om/zAfErIdQnG6wKyqL5a4yXUjsaLv3aHfs9jZDmGIg6aBq4YjYiry36BaC/ABGsI3hEdhrv5stu+g==
+react-native-render-html@^6.0.0-beta.8:
+  version "6.0.0-beta.8"
+  resolved "https://registry.yarnpkg.com/react-native-render-html/-/react-native-render-html-6.0.0-beta.8.tgz#0bfad42ecb009fdb549a586aa3b1b37df93209b4"
+  integrity sha512-DnUPa/uYSC7lyLQMCVXidBjgj1N1k/TG4tc55pGbwiVYTz17eCMCk7gmw61ruXqvMgNIgEddYrKkwyFtYtYAzw==
   dependencies:
     "@jsamr/counter-style" "^2.0.1"
     "@jsamr/react-native-li" "^2.2.1"
-    "@native-html/transient-render-engine" "^9.0.3"
+    "@native-html/transient-render-engine" "^9.2.1"
     "@types/ramda" "^0.27.40"
     "@types/urijs" "^1.19.15"
     prop-types "^15.5.7"
