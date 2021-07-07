@@ -2,10 +2,13 @@ import React, { useCallback } from "react";
 import {
   CustomBlockRenderer,
   CustomTagRendererRecord,
+  CustomTextualRenderer,
   isDomElement,
   MixedStyleDeclaration,
   MixedStyleRecord,
   RenderHTMLConfigProvider,
+  TChildrenRenderer,
+  TNode,
   TRenderEngineConfig,
   TRenderEngineProvider,
   useInternalRenderer,
@@ -45,7 +48,7 @@ const HeaderRenderer: CustomBlockRenderer = function HeaderRenderer({
 
 const ImageRenderer: CustomBlockRenderer = function ImageRenderer(props) {
   const { Renderer, rendererProps } = useInternalRenderer("img", props);
-  if ((props.tnode.parent?.classes.indexOf("avatar__photo") || -1) > -1) {
+  if (props.tnode.parent?.hasClass("avatar__photo")) {
     return <Renderer {...rendererProps} width={50} height={50} />;
   }
   return <Renderer {...rendererProps} style={{}} />;
@@ -69,21 +72,43 @@ const ParagraphRenderer: CustomBlockRenderer = function ParagraphRenderer({
   );
 };
 
-const DivRenderer: CustomBlockRenderer = function DivRenderer({
+function tnodeEndsWithNewLine(tnode: TNode): boolean {
+  if (tnode.type === "text") {
+    return tnode.data.endsWith("\n");
+  }
+  const lastChild = tnode.children[tnode.children.length - 1];
+  return lastChild ? tnodeEndsWithNewLine(lastChild) : false;
+}
+
+const SpanRenderer: CustomTextualRenderer = function SpanRenderer({
   TDefaultRenderer,
   ...props
 }) {
-  if (props.tnode.classes.indexOf("prism-code") > -1) {
+  if (props.tnode.hasClass("token-line") && !tnodeEndsWithNewLine(props.tnode)) {
+    return (
+      <TDefaultRenderer {...props}>
+        <TChildrenRenderer tchildren={props.tnode.children} />
+        {"\n"}
+      </TDefaultRenderer>
+    );
+  }
+  return <TDefaultRenderer {...props} />;
+};
+
+const PreRenderer: CustomBlockRenderer = function PreRenderer({
+  TDefaultRenderer,
+  ...props
+}) {
+  if (props.tnode.hasClass("prism-code")) {
     return (
       <ScrollView horizontal style={props.style}>
         <TDefaultRenderer
           {...props}
-          style={[{ flexGrow: 1, flexShrink: 1, padding: 10 }]}
+          style={{ flexGrow: 1, flexShrink: 1, padding: 10 }}
         />
       </ScrollView>
     );
   }
-
   return <TDefaultRenderer {...props} />;
 };
 
@@ -93,7 +118,8 @@ const renderers: CustomTagRendererRecord = {
   img: ImageRenderer,
   p: ParagraphRenderer,
   header: HeaderRenderer,
-  div: DivRenderer,
+  span: SpanRenderer,
+  pre: PreRenderer,
 };
 
 const classesStyles: MixedStyleRecord = {
@@ -128,15 +154,12 @@ const classesStyles: MixedStyleRecord = {
     marginRight: 10,
     overflow: "hidden",
   },
-  "token-line": {
-    whiteSpace: "pre",
-    lineHeight: 12 * 1.4,
-  },
   "prism-code": {
     backgroundColor: "#282c34",
     fontFamily: "monospace",
     borderRadius: 10,
-    fontSize: 12,
+    fontSize: 14,
+    lineHeight: 14 * 1.6,
     flexShrink: 0,
   },
 };
@@ -170,7 +193,6 @@ const tagsStyles: MixedStyleRecord = {
     borderLeftColor: "#ffe564",
   },
 };
-
 
 const baseStyle: MixedStyleDeclaration = {
   color: "#1c1e21",
